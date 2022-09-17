@@ -2,12 +2,20 @@ import { Request, Response, NextFunction, Application, ErrorRequestHandler } fro
 import createHttpError from 'http-errors'
 
 import userRouter from './user/user'
-import tradimgRouter from './user/trading'
+import tradingRouter from './user/trading'
+import walletRouter from './user/wallet'
+import coinRouter from './user/coin'
+
+import tradingAdminRouter from './admin/trading'
 
 const router = (app: Application) => {
 
     app.use(userRouter)
-    app.use(tradimgRouter)
+    app.use(tradingRouter)
+    app.use(walletRouter)
+    app.use(coinRouter)
+
+    app.use(tradingAdminRouter)
 
     app.use((req: Request, res: Response, next: NextFunction) => {
         next(new createHttpError.NotFound())

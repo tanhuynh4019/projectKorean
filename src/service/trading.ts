@@ -16,15 +16,32 @@ class TradingService {
 
     public async list(body: any) {
         try {
-            const { top, orderby, count, widget_key } = body
+            const { top, orderby, count, widget_key, skip } = body
             const url = `
                 https://ratings-live.dpcopytrading.com/api/rating/1?
                 $top=${top}
+                &$skip=${skip}
                 &$orderby=${orderby}
                 &$count=${count}
                 &widget_key=${widget_key}
             `
             const getTrading = await axios.get(url)
+            this.setMessage("Trading List !")
+            return getTrading.data
+        } catch (error) {
+            console.log(error);
+            return false
+        }
+    }
+
+    public async SaveTradinglist(body: any) {
+        try {
+            const { top } = body
+            const url = `
+                http://ratings-live.dpcopytrading.com/api/rating/1?$top=${top}&$orderby=ratingPoints%20desc&$count=true&widget_key=social_platform_ratings
+            `
+            const getTrading = await axios.get(url)
+
             this.setMessage("Trading List !")
             return getTrading.data
         } catch (error) {
