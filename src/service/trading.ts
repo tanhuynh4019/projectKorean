@@ -47,7 +47,17 @@ class TradingService {
                     break;
                 case 'instruments':
                     var url = `
-                    http://ratings-live.dpcopytrading.com/api/rating/1/profile/${id}?widget_key=social_platform_ratings`
+                    http://ratings-live.dpcopytrading.com/api/reports/${id}/instruments?widget_key=social_platform_ratings`
+                    details = await axios.get(url)
+                    break
+                case 'trading':
+                    var url = `
+                    http://ratings-live.dpcopytrading.com/api/reports/${id}/trading?widget_key=social_platform_ratings`
+                    details = await axios.get(url)
+                    break
+                case 'indicators':
+                    var url = `
+                        http://ratings-live.dpcopytrading.com/api/reports/${id}/indicators?widget_key=social_platform_ratings`
                     details = await axios.get(url)
                     break
                 default:
