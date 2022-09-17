@@ -1,8 +1,6 @@
 enum RoleUser {
     USER,
-    EDITOR,
-    ADMIN,
-    SUPERADMIN
+    ADMIN
 }
 
 export default RoleUser

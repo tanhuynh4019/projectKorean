@@ -4,7 +4,7 @@ import tradingService from "../service/trading"
 class TradingController {
     public async GetList(req: Request, res: Response, next: NextFunction) {
         try {
-            const result = await tradingService.list();
+            const result = await tradingService.list(req.body);
             if (result) {
                 res.status(200).json({ status: 200, error: false, message: tradingService.getMessage(), data: result })
             } else {
@@ -18,7 +18,8 @@ class TradingController {
 
     public async Details(req: Request, res: Response, next: NextFunction) {
         try {
-            const result = await tradingService.detail();
+            console.log('object');
+            const result = await tradingService.detail(req.params, req.body);
             if (result) {
                 res.status(200).json({ status: 200, error: false, message: tradingService.getMessage(), data: result })
             } else {

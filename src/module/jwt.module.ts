@@ -13,6 +13,10 @@ class JWT {
         }, this.jwt_secret)
         return c_token
     }
+
+    public async sign(payload: any){
+        return await jwt.sign(payload, String(process.env.JWT_SECRET), { expiresIn: 36000 * 24 })
+    }
 }
 
 export default new JWT()

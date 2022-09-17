@@ -4,7 +4,7 @@ import userService from "../service/user"
 class UserController {
     public async Login(req: Request, res: Response, next: NextFunction) {
         try {
-            const result = await userService.login();
+            const result = await userService.login(req.body, req.ip);
             if (result) {
                 res.status(200).json({ status: 200, error: false, message: userService.getMessage(), data: result })
             } else {
@@ -18,7 +18,7 @@ class UserController {
 
     public async Register(req: Request, res: Response, next: NextFunction) {
         try {
-            const result = await userService.register();
+            const result = await userService.register(req.body, req.ip);
             if (result) {
                 res.status(200).json({ status: 200, error: false, message: userService.getMessage(), data: result })
             } else {
@@ -32,7 +32,7 @@ class UserController {
 
     public async GetProfile(req: Request, res: Response, next: NextFunction) {
         try {
-            const result = await userService.profile();
+            const result = await userService.profile(req.user);
             if (result) {
                 res.status(200).json({ status: 200, error: false, message: userService.getMessage(), data: result })
             } else {

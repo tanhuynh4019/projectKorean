@@ -10,9 +10,11 @@ import controller from "../../controller/user"
 const router = express.Router()
 
 // router.post('/api/user/v1/login', validate.validateBody(validate.schemas.userLogin), controller.Login)
-router.post('/api/user/v1/login', controller.Login)
-router.post('/api/user/v1/register', controller.Register)
-router.get('/api/user/v1/get-profile', controller.GetProfile)
+router.post('/api/user/v1/login', validate.validateBody(validate.schemas.userLogin), controller.Login)
+router.post('/api/user/v1/register', validate.validateBody(validate.schemas.userRegister), controller.Register)
+router.get('/api/user/v1/get-profile', passport.authenticate('jwt', {
+    session: false
+}), controller.GetProfile)
 
 export default router
 

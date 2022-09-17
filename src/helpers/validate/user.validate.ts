@@ -24,7 +24,30 @@ const validateBody = (schema: any) => {
 
 const schemas = {
     userLogin: Joi.object().keys({
-        
+        email: Joi.string().email().empty().required().messages({
+            'string.email': 'Email is not valid !',
+            'any.required': 'Please enter your email !',
+            'string.empty': 'Email cannot be empty !',
+        }),
+        password: Joi.string().empty().required().messages({
+            'any.required': 'Please enter your password !',
+            'string.empty': 'Password cannot be empty! ',
+        }),
+    }),
+    userRegister: Joi.object().keys({
+        email: Joi.string().email().empty().required().messages({
+            'string.email': 'Email is not valid !',
+            'any.required': 'Please enter your email !',
+            'string.empty': 'Email cannot be empty !',
+        }),
+        password: Joi.string().empty().required().messages({
+            'any.required': 'Please enter your password !',
+            'string.empty': 'Password cannot be empty! ',
+        }),
+        confirmPassword: Joi.string().empty().required().messages({
+            'any.required': 'Please enter your password !',
+            'string.empty': 'Password cannot be empty! ',
+        }),
     }),
 }
 
