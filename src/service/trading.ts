@@ -1,7 +1,7 @@
 import axios from 'axios'
-import bcryptModule from '../module/bcrypt.module'
-import db from '../config/db'
-import jwtModule from '../module/jwt.module'
+import jsonTrading from '../json/tradings'
+
+import tradingModel from '../model/rating'
 
 class TradingService {
 
@@ -36,14 +36,22 @@ class TradingService {
 
     public async SaveTradinglist(body: any) {
         try {
-            const { top } = body
-            const url = `
-                http://ratings-live.dpcopytrading.com/api/rating/1?$top=${top}&$orderby=ratingPoints%20desc&$count=true&widget_key=social_platform_ratings
-            `
-            const getTrading = await axios.get(url)
+
+            const tradings: any = jsonTrading.items;
+
+            for(let i = 0; i < tradings.length; i++) {
+                const find: any = await tradingModel.findOne({
+                    accountId: tradings[i].accountId
+                })
+
+                if(!find){
+                    const create = await tradingModel.create(tradings[i])
+                    create.save()
+                }
+            }
 
             this.setMessage("Trading List !")
-            return getTrading.data
+            return {}
         } catch (error) {
             console.log(error);
             return false

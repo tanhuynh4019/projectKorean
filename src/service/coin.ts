@@ -23,7 +23,6 @@ class CoinService {
 
     public async getCoin(body: any) {
         try {
-            this.Create();
             const { type } = body
             const typeV = type ? type : 'PAYMENT'
 
@@ -60,7 +59,8 @@ class CoinService {
                 {
                     code: 'USDT',
                     price: 1,
-                    name: 'Tether USDT'
+                    name: 'Tether USDT',
+                    image: '/images/coin/USDT.png'
                 }
             ]
 

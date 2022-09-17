@@ -1,16 +1,7 @@
-// import axios from 'axios'
-import bcryptModule from '../module/bcrypt.module'
-import db from '../config/db'
-import jwtModule from '../module/jwt.module'
-import jwt from 'jsonwebtoken'
+
 import Web3 from 'web3'
-import timeModule from '../module/time.module'
-
 import coinService from '../service/coin'
-
 import walletUser from '../model/wallet_code'
-
-import roleEnum from '../common/role.enum'
 class WalletService {
 
     private message: string;
@@ -22,16 +13,24 @@ class WalletService {
         this.message = message
     }
 
-    public async wallet(body: any, user: any) {
+    public async wallet(user: any) {
         try {
-            const { symbol } = body
 
-            const check = await walletUser.findOne({
-                code: symbol, user_auth: user._id
+            const getWallet: any = await walletUser.find({
+                user_auth: user._id
             })
 
+            console.log(getWallet);
+
+
+            const obj: any = {}
+
+            for (let i = 0; i < getWallet.length; i++) {
+                obj[`${getWallet[i].code}`] = getWallet[i].amount;
+            }
+
             this.setMessage("List wallet !")
-            return {}
+            return obj
         } catch (error) {
             console.log(error);
             this.setMessage("Disconnect! !")
@@ -43,8 +42,6 @@ class WalletService {
         try {
             const { symbol } = body
             let result: any;
-
-            console.log(this.addWalletCode);
             const checkCoin = await coinService.checkCoin(symbol)
             if (!checkCoin) {
                 this.setMessage("Symbol is not valid !")
@@ -55,11 +52,29 @@ class WalletService {
                 code: symbol, user_auth: user._id
             })
             if (check) {
-                result = check
+                result = {
+                    address: check.address,
+                    amount: check.amount,
+                    code: check.code
+                }
             }
             else {
+                const wl: any = await this.addWalletCode();
+
+                const data = {
+                    user_auth: user._id,
+                    address: wl.address,
+                    private_key: wl.privateKey,
+                    amount: 0,
+                    code: symbol
+                }
+                const createWallet = await walletUser.create(data)
+                createWallet.save()
+
                 result = {
-                    address: 'aaaa'
+                    address: data.address,
+                    amount: data.amount,
+                    code: data.code
                 }
             }
 
@@ -72,10 +87,10 @@ class WalletService {
         }
     }
 
-    private async addWalletCode(body: any, user: any) {
+    private async addWalletCode() {
         try {
             const web3 = new Web3('https://bas-aries-public.nodereal.io');
-            const wl = await web3.eth.accounts.create();
+            const wl = web3.eth.accounts.create();
 
             return wl;
         } catch (error) {

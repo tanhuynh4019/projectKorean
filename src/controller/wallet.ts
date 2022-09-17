@@ -4,7 +4,7 @@ import walletService from "../service/wallet"
 class WalletController {
     public async GetWallet(req: Request, res: Response, next: NextFunction) {
         try {
-            const result = await walletService.wallet(req.body, req.user);
+            const result = await walletService.wallet(req.user);
             if (result) {
                 res.status(200).json({ status: 200, error: false, message: walletService.getMessage(), data: result })
             } else {
