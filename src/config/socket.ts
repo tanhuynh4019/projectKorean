@@ -51,7 +51,7 @@ class SocketIO {
         while (true) {
             console.log('===> 2');
             await tradingService.SaveTradinglist();
-            await delay(60000);
+            await delay(120000);
         }
     }
 

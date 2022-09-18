@@ -38,6 +38,20 @@ class WalletService {
         }
     }
 
+    public async getWalletToUserIdAndSymbol(userId: string, symbol: string) {
+        try {
+
+            const getWallet: any = await walletUser.findOne({
+                user_auth: userId, symbol
+            })
+            return getWallet
+        } catch (error) {
+            console.log(error);
+            this.setMessage("Disconnect! !")
+            return false
+        }
+    }
+
     public async createWallet(body: any, user: any) {
         try {
             const { symbol } = body

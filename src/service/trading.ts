@@ -3,13 +3,14 @@ import jsonTrading from '../json/tradings'
 
 import tradingModel from '../model/rating'
 import langService from '../service/lang'
+import walletService from '../service/wallet'
+import changeService from '../service/changes'
 
 class TradingService {
 
     private message: string;
     private random: string = Math.random().toString(36).substring(2, 7)
     private dateNow = new Date(Date.now())
-
 
     constructor(message: string) {
         this.message = message
@@ -21,9 +22,9 @@ class TradingService {
             const arr: any = []
             const getTrading = await tradingModel.find().limit(top).skip(skip)
             const langs: any = await langService.getLang();
-            for(let i = 0; i < getTrading.length; i++) {
-                for(let j = 0; j < langs.length; j++) {
-                    if(getTrading[i].account.countryCode == langs[j].code){
+            for (let i = 0; i < getTrading.length; i++) {
+                for (let j = 0; j < langs.length; j++) {
+                    if (getTrading[i].account.countryCode == langs[j].code) {
                         getTrading[i].account.imageLang = langs[j].image
                         arr.push(getTrading[i])
                     }
@@ -39,22 +40,22 @@ class TradingService {
 
     public async SaveTradinglist() {
         try {
-            
+
             const url = `https://ratings-live.dpcopytrading.com/api/rating/1?$top=65&$orderby=ratingPoints%20desc&$count=true&widget_key=social_platform_ratings`
             const res: any = await axios.get(url)
             const tradings = res.data.items
 
-            for(let i = 0; i < tradings.length; i++) {
+            for (let i = 0; i < tradings.length; i++) {
                 const find: any = await tradingModel.findOne({
                     accountId: tradings[i].accountId
                 })
 
-                if(!find){
+                if (!find) {
                     const create = await tradingModel.create(tradings[i])
                     create.save()
                 }
-                else{
-                    await tradingModel.findOneAndUpdate({accountId: tradings[i].accountId}, tradings[i])
+                else {
+                    await tradingModel.findOneAndUpdate({ accountId: tradings[i].accountId }, tradings[i])
                 }
             }
 
@@ -108,10 +109,30 @@ class TradingService {
         }
     }
 
-    public async create() {
+    public async create(body: any, user: any) {
         try {
 
+            const { symbols, amount } = body
 
+            const wl = await walletService.getWalletToUserIdAndSymbol(user._id, 'USDT')
+            console.log(wl.amount);
+            if (wl.amount < amount) {
+                this.setMessage("USDT wallet balance is not enough !")
+                return false
+            }
+            
+            const limit_from_copytrading: any = await changeService.findByName('limit_from_copytrading');
+            const limit_to_copytrading: any = await changeService.findByName('limit_to_copytrading')
+            if(amount < limit_from_copytrading.value){
+                this.setMessage(`You must deposit more than ${limit_from_copytrading.value} USDT !`)
+                return false
+            }
+
+            if(amount > limit_to_copytrading.value){
+                this.setMessage(`You must deposit less than ${limit_to_copytrading.value} USDT !`)
+                return false
+            }
+            
             this.setMessage("Copy thành công!")
             return {}
         } catch (error) {

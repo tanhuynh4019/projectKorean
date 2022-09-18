@@ -10,7 +10,9 @@ const router = express.Router()
 // router.post('/api/user/v1/login', validate.validateBody(validate.schemas.userLogin), controller.Login)
 router.post('/api/trading/v1/list', controller.GetList)
 router.post('/api/trading/v1/details/:id', controller.Details)
-router.post('/api/trading/v1/create', controller.Create)
+router.post('/api/trading/v1/create', passport.authenticate('jwt', {
+    session: false
+}), controller.Create)
 
 export default router
 

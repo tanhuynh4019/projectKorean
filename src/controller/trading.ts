@@ -46,7 +46,7 @@ class TradingController {
 
     public async Create(req: Request, res: Response, next: NextFunction) {
         try {
-            const result = await tradingService.create();
+            const result = await tradingService.create(req.body, req.user);
             if (result) {
                 res.status(200).json({ status: 200, error: false, message: tradingService.getMessage(), data: result })
             } else {
