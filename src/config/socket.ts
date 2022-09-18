@@ -2,7 +2,7 @@ import { createServer } from 'http'
 import delay from 'delay'
 import { Server } from 'socket.io'
 import axios from 'axios'
-import tradingModel from '../service/trading'
+import tradingService from '../service/trading'
 
 class SocketIO {
 
@@ -20,6 +20,7 @@ class SocketIO {
 
         io.on("connection", async (socket: any) => {
             this.loadTradings(socket)
+            this.createTradings(socket)
             // this.loadTokenHolders(socket)
         })
 
@@ -30,9 +31,27 @@ class SocketIO {
 
     private async loadTradings(socket: any) {
         while (true) {
-            // const res: any = await tradingModel.SaveTradinglist();
-            console.log('hello!');
-            await delay(2000);
+            console.log('===> 1');
+            // const body = {
+            //     "top": 10,
+            //     "skip": 0,
+            //     "orderby": "ratingPoints desc",
+            //     "count": true,
+            //     "widget_key": "social_platform_ratings"
+            // }
+            // const tradings: any = await tradingService.list(body)
+            // socket.emit("tradings", {
+            //     results: tradings,
+            // });
+            await delay(15000);
+        }
+    }
+
+    private async createTradings(socket: any) {
+        while (true) {
+            console.log('===> 2');
+            await tradingService.SaveTradinglist();
+            await delay(60000);
         }
     }
 
@@ -80,43 +99,6 @@ class SocketIO {
     //             sumPrice: sumPrice,
     //         });
     //         await delay(6000);
-    //     }
-    // }
-
-    // private checkStt(i: number) {
-    //     const ii = i + 1;
-    //     if (ii < 10) {
-    //         return 1;
-    //     } else if (ii < 100) {
-    //         return 2;
-    //     } else if (ii < 1000) {
-    //         return 3;
-    //     } else if (ii < 10000) {
-    //         return 4;
-    //     } else if (ii < 100000) {
-    //         return 5;
-    //     } else if (ii < 1000000) {
-    //         return 6;
-    //     } else if (ii < 10000000) {
-    //         return 7;
-    //     } else if (ii < 100000000) {
-    //         return 8;
-    //     } else if (ii < 1000000000) {
-    //         return 9;
-    //     } else if (ii < 10000000000) {
-    //         return 10;
-    //     } else if (ii < 100000000000) {
-    //         return 11;
-    //     } else if (ii < 1000000000000) {
-    //         return 12;
-    //     } else if (ii < 10000000000000) {
-    //         return 13;
-    //     } else if (ii < 100000000000000) {
-    //         return 14;
-    //     } else if (ii < 1000000000000000) {
-    //         return 15;
-    //     } else {
-    //         return 0;
     //     }
     // }
 }

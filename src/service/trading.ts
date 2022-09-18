@@ -2,6 +2,7 @@ import axios from 'axios'
 import jsonTrading from '../json/tradings'
 
 import tradingModel from '../model/rating'
+import langService from '../service/lang'
 
 class TradingService {
 
@@ -17,17 +18,19 @@ class TradingService {
     public async list(body: any) {
         try {
             const { top, orderby, count, widget_key, skip } = body
-            // const url = `
-            //     https://ratings-live.dpcopytrading.com/api/rating/1?
-            //     $top=${top}
-            //     &$skip=${skip}
-            //     &$orderby=${orderby}
-            //     &$count=${count}
-            //     &widget_key=${widget_key}
-            // `
+            const arr: any = []
             const getTrading = await tradingModel.find().limit(top).skip(skip)
+            const langs: any = await langService.getLang();
+            for(let i = 0; i < getTrading.length; i++) {
+                for(let j = 0; j < langs.length; j++) {
+                    if(getTrading[i].account.countryCode == langs[j].code){
+                        getTrading[i].account.imageLang = langs[j].image
+                        arr.push(getTrading[i])
+                    }
+                }
+            }
             this.setMessage("Trading List !")
-            return getTrading
+            return arr
         } catch (error) {
             console.log(error);
             return false
@@ -49,6 +52,9 @@ class TradingService {
                 if(!find){
                     const create = await tradingModel.create(tradings[i])
                     create.save()
+                }
+                else{
+                    await tradingModel.findOneAndUpdate({accountId: tradings[i].accountId}, tradings[i])
                 }
             }
 

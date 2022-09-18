@@ -16,5 +16,6 @@ router.get('/api/user/v1/get-profile', passport.authenticate('jwt', {
     session: false
 }), controller.GetProfile)
 
+
 export default router
 
