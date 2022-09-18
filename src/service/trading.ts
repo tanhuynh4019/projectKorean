@@ -2,9 +2,13 @@ import axios from 'axios'
 import jsonTrading from '../json/tradings'
 
 import tradingModel from '../model/rating'
+import historyCopytradingModel from '../model/historyCopytrading'
+
 import langService from '../service/lang'
 import walletService from '../service/wallet'
 import changeService from '../service/changes'
+import historyCopytradingService from '../service/history_copytrading'
+import coinService from '../service/coin'
 
 class TradingService {
 
@@ -112,10 +116,18 @@ class TradingService {
     public async create(body: any, user: any) {
         try {
 
-            const { symbols, amount } = body
+            const { symbols, amount,  accountId} = body
+            const arrSymbol = symbols.split(",")
+
+            for (let i = 0; i < arrSymbol.length; i++) {
+                const checkCoin = await coinService.checkCoin(arrSymbol[i]);
+                if(!checkCoin) {
+                    this.setMessage(`Invalid symbol [${arrSymbol[i]}] !`)
+                    return false
+                }
+            }
 
             const wl = await walletService.getWalletToUserIdAndSymbol(user._id, 'USDT')
-            console.log(wl.amount);
             if (wl.amount < amount) {
                 this.setMessage("USDT wallet balance is not enough !")
                 return false
@@ -134,9 +146,32 @@ class TradingService {
             }
 
             await walletService.updateWalletUserIDSubtraction(amount, 'USDT', user._id)
+
+            // Lưu lịch sử
+            for (let i = 0; i < arrSymbol.length; i++) {
+                await historyCopytradingService.create(user._id, accountId, 'USDT', arrSymbol[i], amount)
+            }
             
             this.setMessage("Copytrading successfully !")
             return {}
+        } catch (error) {
+            console.log(error);
+            return false
+        }
+    }
+
+    public async historyByUserID(body: any, user: any) {
+        try {
+
+            const { accountId} = body
+
+            const getHistory = await historyCopytradingModel.find({
+                accountId,
+                user_auth: user._id
+            })
+            
+            this.setMessage("List history copytraning !")
+            return getHistory
         } catch (error) {
             console.log(error);
             return false

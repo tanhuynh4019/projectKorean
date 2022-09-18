@@ -13,6 +13,9 @@ router.post('/api/trading/v1/details/:id', controller.Details)
 router.post('/api/trading/v1/create', passport.authenticate('jwt', {
     session: false
 }), controller.Create)
+router.get('/api/trading/v1/history-trading', passport.authenticate('jwt', {
+    session: false
+}), controller.HistoryTrading)
 
 export default router
 

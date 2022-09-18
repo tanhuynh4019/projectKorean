@@ -57,6 +57,20 @@ class TradingController {
             res.status(400).json({ status: 400, error: true, message: error.message })
         }
     }
+
+    public async HistoryTrading(req: Request, res: Response, next: NextFunction) {
+        try {
+            const result = await tradingService.historyByUserID(req.body, req.user);
+            if (result) {
+                res.status(200).json({ status: 200, error: false, message: tradingService.getMessage(), data: result })
+            } else {
+                res.status(400).json({ status: 400, error: true, message: tradingService.getMessage() })
+            }
+
+        } catch (error: any) {
+            res.status(400).json({ status: 400, error: true, message: error.message })
+        }
+    }
 }
 
 export default new TradingController()
