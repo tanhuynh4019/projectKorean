@@ -17,7 +17,23 @@ class TradingController {
     GetList(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const result = yield trading_1.default.list();
+                const result = yield trading_1.default.list(req.body);
+                if (result) {
+                    res.status(200).json({ status: 200, error: false, message: trading_1.default.getMessage(), data: result });
+                }
+                else {
+                    res.status(400).json({ status: 400, error: true, message: trading_1.default.getMessage() });
+                }
+            }
+            catch (error) {
+                res.status(400).json({ status: 400, error: true, message: error.message });
+            }
+        });
+    }
+    SaveTrading(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const result = yield trading_1.default.SaveTradinglist();
                 if (result) {
                     res.status(200).json({ status: 200, error: false, message: trading_1.default.getMessage(), data: result });
                 }
@@ -33,7 +49,7 @@ class TradingController {
     Details(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const result = yield trading_1.default.detail();
+                const result = yield trading_1.default.detail(req.params, req.body);
                 if (result) {
                     res.status(200).json({ status: 200, error: false, message: trading_1.default.getMessage(), data: result });
                 }
@@ -49,7 +65,23 @@ class TradingController {
     Create(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const result = yield trading_1.default.create();
+                const result = yield trading_1.default.create(req.body, req.user);
+                if (result) {
+                    res.status(200).json({ status: 200, error: false, message: trading_1.default.getMessage(), data: result });
+                }
+                else {
+                    res.status(400).json({ status: 400, error: true, message: trading_1.default.getMessage() });
+                }
+            }
+            catch (error) {
+                res.status(400).json({ status: 400, error: true, message: error.message });
+            }
+        });
+    }
+    HistoryTrading(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const result = yield trading_1.default.historyByUserID(req.body, req.user);
                 if (result) {
                     res.status(200).json({ status: 200, error: false, message: trading_1.default.getMessage(), data: result });
                 }

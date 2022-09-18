@@ -12,17 +12,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const user_1 = __importDefault(require("../service/user"));
-class UserController {
-    Login(req, res, next) {
+const wallet_1 = __importDefault(require("../service/wallet"));
+class WalletController {
+    GetWallet(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const result = yield user_1.default.login(req.body, req.ip);
+                const result = yield wallet_1.default.wallet(req.user);
                 if (result) {
-                    res.status(200).json({ status: 200, error: false, message: user_1.default.getMessage(), data: result });
+                    res.status(200).json({ status: 200, error: false, message: wallet_1.default.getMessage(), data: result });
                 }
                 else {
-                    res.status(400).json({ status: 400, error: true, message: user_1.default.getMessage() });
+                    res.status(400).json({ status: 400, error: true, message: wallet_1.default.getMessage() });
                 }
             }
             catch (error) {
@@ -30,31 +30,15 @@ class UserController {
             }
         });
     }
-    Register(req, res, next) {
+    CreateWallet(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const result = yield user_1.default.register(req.body, req.ip);
+                const result = yield wallet_1.default.createWallet(req.body, req.user);
                 if (result) {
-                    res.status(200).json({ status: 200, error: false, message: user_1.default.getMessage(), data: result });
+                    res.status(200).json({ status: 200, error: false, message: wallet_1.default.getMessage(), data: result });
                 }
                 else {
-                    res.status(400).json({ status: 400, error: true, message: user_1.default.getMessage() });
-                }
-            }
-            catch (error) {
-                res.status(400).json({ status: 400, error: true, message: error.message });
-            }
-        });
-    }
-    GetProfile(req, res, next) {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                const result = yield user_1.default.profile(req.user);
-                if (result) {
-                    res.status(200).json({ status: 200, error: false, message: user_1.default.getMessage(), data: result });
-                }
-                else {
-                    res.status(400).json({ status: 400, error: true, message: user_1.default.getMessage() });
+                    res.status(400).json({ status: 400, error: true, message: wallet_1.default.getMessage() });
                 }
             }
             catch (error) {
@@ -63,4 +47,4 @@ class UserController {
         });
     }
 }
-exports.default = new UserController();
+exports.default = new WalletController();

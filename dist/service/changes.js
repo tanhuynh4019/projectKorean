@@ -12,27 +12,33 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-class JWT {
-    constructor() {
-        this.exp = new Date().setDate(new Date().getDate() + 3);
-        this.iat = new Date().getTime();
-        this.jwt_secret = String(process.env.JWT_SECRET);
+const change_1 = __importDefault(require("../model/change"));
+class ChangeService {
+    constructor(message) {
+        this.random = Math.random().toString(36).substring(2, 16);
+        this.dateNow = new Date(Date.now());
+        this.getMessage = () => {
+            return this.message;
+        };
+        this.setMessage = (message) => {
+            this.message = message;
+        };
+        this.message = message;
     }
-    endcodedToken(token) {
+    findByName(name) {
         return __awaiter(this, void 0, void 0, function* () {
-            const c_token = yield jsonwebtoken_1.default.sign({
-                sub: token,
-                iat: this.iat,
-                exp: this.exp
-            }, this.jwt_secret);
-            return c_token;
-        });
-    }
-    sign(payload) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return yield jsonwebtoken_1.default.sign(payload, String(process.env.JWT_SECRET), { expiresIn: 36000 * 24 });
+            try {
+                const findByOne = yield change_1.default.findOne({
+                    name
+                });
+                return findByOne;
+            }
+            catch (error) {
+                console.log(error);
+                this.setMessage("Disconnect! !");
+                return false;
+            }
         });
     }
 }
-exports.default = new JWT();
+exports.default = new ChangeService('');

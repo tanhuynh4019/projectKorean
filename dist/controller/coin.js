@@ -12,27 +12,23 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-class JWT {
-    constructor() {
-        this.exp = new Date().setDate(new Date().getDate() + 3);
-        this.iat = new Date().getTime();
-        this.jwt_secret = String(process.env.JWT_SECRET);
-    }
-    endcodedToken(token) {
+const coin_1 = __importDefault(require("../service/coin"));
+class CoinController {
+    GetCoin(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
-            const c_token = yield jsonwebtoken_1.default.sign({
-                sub: token,
-                iat: this.iat,
-                exp: this.exp
-            }, this.jwt_secret);
-            return c_token;
-        });
-    }
-    sign(payload) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return yield jsonwebtoken_1.default.sign(payload, String(process.env.JWT_SECRET), { expiresIn: 36000 * 24 });
+            try {
+                const result = yield coin_1.default.getCoin(req.body);
+                if (result) {
+                    res.status(200).json({ status: 200, error: false, message: coin_1.default.getMessage(), data: result });
+                }
+                else {
+                    res.status(400).json({ status: 400, error: true, message: coin_1.default.getMessage() });
+                }
+            }
+            catch (error) {
+                res.status(400).json({ status: 400, error: true, message: error.message });
+            }
         });
     }
 }
-exports.default = new JWT();
+exports.default = new CoinController();

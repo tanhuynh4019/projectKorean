@@ -25,7 +25,32 @@ const validateBody = (schema) => {
     };
 };
 const schemas = {
-    userLogin: joi_1.default.object().keys({}),
+    userLogin: joi_1.default.object().keys({
+        email: joi_1.default.string().email().empty().required().messages({
+            'string.email': 'Email is not valid !',
+            'any.required': 'Please enter your email !',
+            'string.empty': 'Email cannot be empty !',
+        }),
+        password: joi_1.default.string().empty().required().messages({
+            'any.required': 'Please enter your password !',
+            'string.empty': 'Password cannot be empty! ',
+        }),
+    }),
+    userRegister: joi_1.default.object().keys({
+        email: joi_1.default.string().email().empty().required().messages({
+            'string.email': 'Email is not valid !',
+            'any.required': 'Please enter your email !',
+            'string.empty': 'Email cannot be empty !',
+        }),
+        password: joi_1.default.string().empty().required().messages({
+            'any.required': 'Please enter your password !',
+            'string.empty': 'Password cannot be empty! ',
+        }),
+        confirmPassword: joi_1.default.string().empty().required().messages({
+            'any.required': 'Please enter your password !',
+            'string.empty': 'Password cannot be empty! ',
+        }),
+    }),
 };
 exports.default = {
     validateBody,
