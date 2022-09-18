@@ -17,27 +17,29 @@ class TradingService {
     public async list(body: any) {
         try {
             const { top, orderby, count, widget_key, skip } = body
-            const url = `
-                https://ratings-live.dpcopytrading.com/api/rating/1?
-                $top=${top}
-                &$skip=${skip}
-                &$orderby=${orderby}
-                &$count=${count}
-                &widget_key=${widget_key}
-            `
-            const getTrading = await axios.get(url)
+            // const url = `
+            //     https://ratings-live.dpcopytrading.com/api/rating/1?
+            //     $top=${top}
+            //     &$skip=${skip}
+            //     &$orderby=${orderby}
+            //     &$count=${count}
+            //     &widget_key=${widget_key}
+            // `
+            const getTrading = await tradingModel.find().limit(top).skip(skip)
             this.setMessage("Trading List !")
-            return getTrading.data
+            return getTrading
         } catch (error) {
             console.log(error);
             return false
         }
     }
 
-    public async SaveTradinglist(body: any) {
+    public async SaveTradinglist() {
         try {
-
-            const tradings: any = jsonTrading.items;
+            
+            const url = `https://ratings-live.dpcopytrading.com/api/rating/1?$top=65&$orderby=ratingPoints%20desc&$count=true&widget_key=social_platform_ratings`
+            const res: any = await axios.get(url)
+            const tradings = res.data.items
 
             for(let i = 0; i < tradings.length; i++) {
                 const find: any = await tradingModel.findOne({
@@ -50,8 +52,10 @@ class TradingService {
                 }
             }
 
-            this.setMessage("Trading List !")
-            return {}
+            this.setMessage("Thêm thành công !")
+            return {
+                "m": 'Ok'
+            }
         } catch (error) {
             console.log(error);
             return false

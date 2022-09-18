@@ -2,7 +2,7 @@ import { createServer } from 'http'
 import delay from 'delay'
 import { Server } from 'socket.io'
 import axios from 'axios'
-const { JSDOM } = require("jsdom")
+import tradingModel from '../service/trading'
 
 class SocketIO {
 
@@ -19,7 +19,7 @@ class SocketIO {
 
 
         io.on("connection", async (socket: any) => {
-            // this.loadTransactions(socket)
+            this.loadTradings(socket)
             // this.loadTokenHolders(socket)
         })
 
@@ -28,34 +28,13 @@ class SocketIO {
         httpServer.listen(port, () => console.log(`Connect port ${port}`))
     }
 
-    // private async loadTransactions(socket: any) {
-    //     while (true) {
-    //         const url = "https://api-testnet.bscscan.com/api"
-
-    //         const query = {
-    //             module: "account",
-    //             action: "txlist",
-    //             address: "0xbE046Da0eBB8AfA60c8225eB255C22ABa11B1250",
-    //             // page: 1,
-    //             startblock: 0,
-    //             endblock: 99999999,
-    //             // offset: 10,
-    //             sort: "desc",
-    //             apikey: "QGE7MYQ8KEUATYXG9M5V6C6Z6GP2DN4PC1",
-    //         }
-
-    //         const logs = await axios.get(url, {
-    //             params: query,
-    //         })
-
-    //         const allHistory = logs.data.result
-
-    //         socket.emit("message", {
-    //             results: allHistory,
-    //         })
-    //         await delay(3000);
-    //     }
-    // }
+    private async loadTradings(socket: any) {
+        while (true) {
+            // const res: any = await tradingModel.SaveTradinglist();
+            console.log('hello!');
+            await delay(2000);
+        }
+    }
 
     // private async loadTokenHolders(socket: any) {
     //     while (true) {

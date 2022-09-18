@@ -18,7 +18,7 @@ class TradingController {
 
     public async SaveTrading(req: Request, res: Response, next: NextFunction) {
         try {
-            const result = await tradingService.SaveTradinglist(req.body);
+            const result = await tradingService.SaveTradinglist();
             if (result) {
                 res.status(200).json({ status: 200, error: false, message: tradingService.getMessage(), data: result })
             } else {
