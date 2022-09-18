@@ -101,6 +101,19 @@ class WalletService {
         }
     }
 
+    public async updateWalletUserIDSubtraction(amount: any, symbol: String, userID: String) {
+        try {
+            const res: any = await walletUser.findOne({user_auth: userID, code: symbol})
+            res.amount = res.amount - amount;
+            res.save()
+            return true
+        } catch (error) {
+            console.log(error);
+            this.setMessage("Disconnect! !")
+            return false
+        }
+    }
+
     private async addWalletCode() {
         try {
             const web3 = new Web3('https://bas-aries-public.nodereal.io');

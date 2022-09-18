@@ -132,8 +132,10 @@ class TradingService {
                 this.setMessage(`You must deposit less than ${limit_to_copytrading.value} USDT !`)
                 return false
             }
+
+            await walletService.updateWalletUserIDSubtraction(amount, 'USDT', user._id)
             
-            this.setMessage("Copy thành công!")
+            this.setMessage("Copytrading successfully !")
             return {}
         } catch (error) {
             console.log(error);
