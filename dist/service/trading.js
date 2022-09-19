@@ -96,6 +96,12 @@ class TradingService {
                         var url = `
                     http://ratings-live.dpcopytrading.com/api/rating/1/profile/${id}?widget_key=social_platform_ratings`;
                         details = yield axios_1.default.get(url);
+                        const langs = yield lang_1.default.getLang();
+                        for (let j = 0; j < langs.length; j++) {
+                            if (details.data.account.countryCode == langs[j].code) {
+                                details.data.account.imageLang = langs[j].image;
+                            }
+                        }
                         break;
                     case 'instruments':
                         var url = `

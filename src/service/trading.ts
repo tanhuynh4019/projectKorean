@@ -84,6 +84,15 @@ class TradingService {
                     var url = `
                     http://ratings-live.dpcopytrading.com/api/rating/1/profile/${id}?widget_key=social_platform_ratings`
                     details = await axios.get(url)
+
+
+                    const langs: any = await langService.getLang();
+                    for (let j = 0; j < langs.length; j++) {
+                        if (details.data.account.countryCode == langs[j].code) {
+                            details.data.account.imageLang = langs[j].image
+                        }
+                    }
+
                     break;
                 case 'instruments':
                     var url = `
@@ -116,12 +125,12 @@ class TradingService {
     public async create(body: any, user: any) {
         try {
 
-            const { symbols, amount,  accountId} = body
+            const { symbols, amount, accountId } = body
             const arrSymbol = symbols.split(",")
 
             for (let i = 0; i < arrSymbol.length; i++) {
                 const checkCoin = await coinService.checkCoin(arrSymbol[i]);
-                if(!checkCoin) {
+                if (!checkCoin) {
                     this.setMessage(`Invalid symbol [${arrSymbol[i]}] !`)
                     return false
                 }
@@ -132,15 +141,15 @@ class TradingService {
                 this.setMessage("USDT wallet balance is not enough !")
                 return false
             }
-            
+
             const limit_from_copytrading: any = await changeService.findByName('limit_from_copytrading');
             const limit_to_copytrading: any = await changeService.findByName('limit_to_copytrading')
-            if(amount < limit_from_copytrading.value){
+            if (amount < limit_from_copytrading.value) {
                 this.setMessage(`You must deposit more than ${limit_from_copytrading.value} USDT !`)
                 return false
             }
 
-            if(amount > limit_to_copytrading.value){
+            if (amount > limit_to_copytrading.value) {
                 this.setMessage(`You must deposit less than ${limit_to_copytrading.value} USDT !`)
                 return false
             }
@@ -151,7 +160,7 @@ class TradingService {
             for (let i = 0; i < arrSymbol.length; i++) {
                 await historyCopytradingService.create(user._id, accountId, 'USDT', arrSymbol[i], amount)
             }
-            
+
             this.setMessage("Copytrading successfully !")
             return {}
         } catch (error) {
@@ -163,13 +172,13 @@ class TradingService {
     public async historyByUserID(body: any, user: any) {
         try {
 
-            const { accountId} = body
+            const { accountId } = body
 
             const getHistory = await historyCopytradingModel.find({
                 accountId,
                 user_auth: user._id
             })
-            
+
             this.setMessage("List history copytraning !")
             return getHistory
         } catch (error) {
