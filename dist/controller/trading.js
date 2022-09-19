@@ -19,7 +19,7 @@ class TradingController {
             try {
                 const result = yield trading_1.default.list(req.body);
                 if (result) {
-                    res.status(200).json({ status: 200, error: false, message: trading_1.default.getMessage(), data: result });
+                    res.status(200).json({ status: 200, error: false, message: trading_1.default.getMessage(), total: 65, data: result });
                 }
                 else {
                     res.status(400).json({ status: 400, error: true, message: trading_1.default.getMessage() });
